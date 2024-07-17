@@ -19,13 +19,7 @@ func Execute(ctx context.Context) {
 	query := os.Getenv("QUERY")
 
 	// execute query
-	rows, err := conn.Query(ctx, query)
-
-	// handle query error
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error ejecutando la consulta: %v\n", err)
-		os.Exit(1)
-	}
+	rows, _ := conn.Query(ctx, query)
 
 	// close rows connection on finish execution
 	defer rows.Close()
@@ -35,14 +29,7 @@ func Execute(ctx context.Context) {
 		var p Product
 
 		// scan returned data into entity struct
-		err = rows.Scan(&p.Id, &p.Name, &p.Price, &p.CreatedAt)
-
-		// handle scan error
-		if err != nil {
-			_, _ = fmt.Fprintf(os.Stderr, "Error escaneando fila: %v\n", err)
-
-			continue
-		}
+		_ = rows.Scan(&p.Id, &p.Name, &p.Price, &p.CreatedAt)
 
 		// format entity to json
 		b, _ := json.MarshalIndent(p, "", "   ")
